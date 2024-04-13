@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema targetNamespace="http://infodavid.org/imap_deletion" xmlns:tns="http://infodavid.org/imap_deletion" attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" vc:minVersion="1.1">
+  <xs:simpleType name="logLevelType">
+    <xs:restriction base="xs:string">
+        <xs:enumeration value="DEBUG" />
+        <xs:enumeration value="INFO" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="emailType"> 
+    <xs:restriction base="xs:string"> 
+      <xs:pattern value="[^@]+@[^\.]+\..+"/> 
+    </xs:restriction> 
+  </xs:simpleType> 
+  <xs:element name="configuration">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="log"><!-- Not used in this version -->
+          <xs:complexType>
+            <xs:attribute name="path" type="xs:string" />
+            <xs:attribute name="level" type="tns:logLevelType" />
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="accounts">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="account">
+                <xs:complexType>
+                  <xs:attribute name="id" type="xs:ID" use="required" />
+                  <xs:attribute name="user" type="xs:string" use="required" />
+                  <xs:attribute name="password" type="xs:string" use="required" /><!-- base64 encoded -->
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="rules">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="rule">
+                <xs:complexType>
+                  <xs:attribute name="delete" type="xs:boolean" use="required" default="false" />
+                  <xs:attribute name="subject" type="xs:string" />
+                  <xs:attribute name="email" type="tns:emailType" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="imap">
+          <xs:complexType>
+            <xs:attribute name="server" type="xs:string" use="required" />
+            <xs:attribute name="port" type="xs:unsignedShort" default="143" />
+            <xs:attribute name="ssl" type="xs:string" use="required" />
+            <xs:attribute name="trash" type="xs:string" use="required" />
+            <xs:attribute name="folder" type="xs:string" use="required" />
+            <xs:attribute name="account-id" type="xs:IDREF" use="required" />
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="backup-path" type="xs:string" />
+      <xs:attribute name="date" type="xs:date" />
+      <xs:attribute name="days" type="xs:unsignedInt" default="31" />
+      <xs:attribute name="max-spam-score" type="xs:float" default="9.5" />
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
